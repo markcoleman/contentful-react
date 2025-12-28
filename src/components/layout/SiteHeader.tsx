@@ -1,4 +1,5 @@
-import { ChevronDown, Menu, Phone, Search } from 'lucide-react'
+import { useState } from 'react'
+import { ChevronDown, Menu, Phone, Search, X } from 'lucide-react'
 import { Link, NavLink } from 'react-router-dom'
 import { Button, buttonVariants } from '../ui/button'
 import { cn } from '../../lib/utils'
@@ -21,6 +22,10 @@ type SiteHeaderProps = {
 }
 
 export function SiteHeader({ brand, navItems, utilityLinks, primaryCta }: SiteHeaderProps) {
+  const [mobileOpen, setMobileOpen] = useState(false)
+
+  const closeMobile = () => setMobileOpen(false)
+
   return (
     <header className="sticky top-0 z-30 border-b border-border/70 bg-white/80 backdrop-blur">
       <div className="container flex items-center justify-between gap-4 py-3">
@@ -80,8 +85,15 @@ export function SiteHeader({ brand, navItems, utilityLinks, primaryCta }: SiteHe
           <Button variant="secondary" size="icon" className="bg-secondary text-white">
             <Phone className="h-4 w-4" />
           </Button>
-          <Button variant="ghost" size="icon">
-            <Menu className="h-5 w-5" />
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setMobileOpen((open) => !open)}
+            aria-expanded={mobileOpen}
+            aria-label="Toggle menu"
+            data-testid="mobile-menu-toggle"
+          >
+            {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </Button>
         </div>
       </div>
@@ -105,6 +117,87 @@ export function SiteHeader({ brand, navItems, utilityLinks, primaryCta }: SiteHe
           ))}
         </div>
       </div>
+
+      {mobileOpen ? (
+        <div
+          className="lg:hidden border-t border-border/70 bg-white/95 shadow-xl backdrop-blur-sm"
+          data-testid="mobile-menu"
+        >
+          <div className="container space-y-6 py-6">
+            <div className="flex items-center justify-between gap-3">
+              <div className="flex flex-1 items-center gap-3 rounded-full border border-border bg-white px-3 py-2 shadow-sm">
+                <Search className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
+                <input
+                  className="flex-1 text-sm text-foreground outline-none placeholder:text-muted-foreground"
+                  placeholder="Search products, rates, support"
+                />
+              </div>
+              {primaryCta ? (
+                <Link
+                  to={primaryCta.href}
+                  onClick={closeMobile}
+                  className={cn(
+                    buttonVariants({ size: 'sm' }),
+                    'bg-primary text-white shadow-lg shadow-primary/30',
+                  )}
+                >
+                  {primaryCta.label}
+                </Link>
+              ) : null}
+            </div>
+
+            <div className="space-y-3">
+              {navItems.map((item) => (
+                <NavLink
+                  key={item.href}
+                  to={item.href}
+                  onClick={closeMobile}
+                  className={({ isActive }) =>
+                    cn(
+                      'flex items-center justify-between rounded-xl border px-4 py-3 text-base font-semibold transition',
+                      isActive
+                        ? 'border-primary/30 bg-primary/5 text-primary'
+                        : 'border-border bg-white text-foreground hover:border-primary/30 hover:bg-primary/5',
+                    )
+                  }
+                >
+                  <span>{item.label}</span>
+                  <ChevronDown className="h-4 w-4" />
+                </NavLink>
+              ))}
+            </div>
+
+            <div className="grid gap-3">
+              {utilityLinks.map((link) => (
+                <NavLink
+                  key={link.href}
+                  to={link.href}
+                  onClick={closeMobile}
+                  className={({ isActive }) =>
+                    cn(
+                      'flex items-center justify-between rounded-lg border px-4 py-3 text-sm transition',
+                      isActive
+                        ? 'border-primary/30 bg-primary/5 text-primary'
+                        : 'border-border bg-white text-foreground hover:border-primary/30 hover:bg-primary/5',
+                    )
+                  }
+                >
+                  <span>{link.label}</span>
+                  <ChevronDown className="h-3.5 w-3.5" />
+                </NavLink>
+              ))}
+
+              <button
+                type="button"
+                className="w-full rounded-lg border border-border bg-white px-4 py-3 text-sm font-semibold text-primary transition hover:border-primary/30 hover:bg-primary/5"
+                onClick={closeMobile}
+              >
+                Sign In
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </header>
   )
 }
