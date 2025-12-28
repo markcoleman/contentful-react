@@ -27,6 +27,7 @@ npm run dev
 - Steps: install with `npm ci`, then lint, test, typecheck, and build to mirror local `npm run check` coverage.
 - Uses Node 20 with npm caching; adjust the version in the workflow if your runtime changes.
 - Run `npm run check` locally before opening a PR to match CI expectations.
+- On every commit, Husky runs a `pre-commit` hook that uses lint-staged to lint and format staged files automatically.
 
 ## Tooling
 
