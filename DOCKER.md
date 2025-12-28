@@ -127,7 +127,7 @@ You can also trigger the workflow manually:
 
 The workflow has the following permissions:
 
-- `contents: write` - To read repository content and create releases
+- `contents: write` - To read repository content and access git metadata
 - `packages: write` - To push images to GitHub Container Registry
 
 ### Using Published Images
