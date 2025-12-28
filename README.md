@@ -21,6 +21,13 @@ npm run dev
 - `npm run test` / `test:watch` – Vitest + Testing Library (jsdom)
 - `npm run check` – lint + format + typecheck + tests
 
+## CI (GitHub Actions)
+
+- The workflow in [.github/workflows/ci.yml](.github/workflows/ci.yml) runs on pushes and pull requests to `main`.
+- Steps: install with `npm ci`, then lint, test, typecheck, and build to mirror local `npm run check` coverage.
+- Uses Node 20 with npm caching; adjust the version in the workflow if your runtime changes.
+- Run `npm run check` locally before opening a PR to match CI expectations.
+
 ## Tooling
 
 - React 19, Vite, and Vitest configured for jsdom
