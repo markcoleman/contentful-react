@@ -39,11 +39,11 @@ export function HomePage() {
           <div className="relative">
             <div
               className="absolute -left-10 -top-10 h-40 w-40 rounded-full bg-primary/30 blur-3xl"
-              aria-hidden
+              aria-hidden="true"
             />
             <div
               className="absolute -right-8 -bottom-10 h-40 w-40 rounded-full bg-rose-400/25 blur-3xl"
-              aria-hidden
+              aria-hidden="true"
             />
             <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-white/10 backdrop-blur-xl shadow-2xl shadow-black/30">
               <div className="grid gap-6 p-6 text-sm text-white/90">
