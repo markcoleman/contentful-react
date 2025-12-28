@@ -12,6 +12,8 @@ on:
 jobs:
   docker-build-test:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     env:
       IMAGE_NAME: contentful-react
       IMAGE_TAG: ${{ inputs.tag || 'latest' }}
