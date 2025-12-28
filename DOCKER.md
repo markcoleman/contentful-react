@@ -87,19 +87,82 @@ Currently, the container does not require environment variables. To add runtime 
 
 ## CI/CD Integration
 
-The GitHub Actions workflow (`.github/workflows/docker.yml`) can be triggered manually via workflow_dispatch:
+The GitHub Actions workflow (`.github/workflows/docker.yml`) automatically builds and pushes Docker images to the GitHub Container Registry (GHCR).
+
+### Automatic Triggers
+
+The workflow runs automatically when:
+
+1. **Release is published**: When you create a GitHub release, the workflow builds and pushes the image with version tags
+2. **Tag is pushed**: When you push a tag matching `v*.*.*` (e.g., `v1.0.0`, `v2.1.3`)
+
+### Version Tagging
+
+Images are automatically tagged with:
+
+- Semantic version tags (e.g., `v1.0.0`, `1.0`, `1`)
+- `latest` tag (for main branch)
+- SHA-based tags (for commits)
+
+Example:
+
+```bash
+# When you create release v1.2.3, these tags are pushed:
+ghcr.io/markcoleman/contentful-react:1.2.3
+ghcr.io/markcoleman/contentful-react:1.2
+ghcr.io/markcoleman/contentful-react:1
+ghcr.io/markcoleman/contentful-react:latest
+```
+
+### Manual Workflow Dispatch
+
+You can also trigger the workflow manually:
 
 1. Go to Actions tab in GitHub
-2. Select "Docker Build and Test" workflow
+2. Select "Docker Build and Push" workflow
 3. Click "Run workflow"
-4. Optionally specify a tag (default: latest)
+4. Optionally specify a custom tag
 
-The workflow will:
+### Workflow Permissions
 
-- Build the Docker image
-- Run comprehensive tests
-- Verify security configuration
-- Output build summary
+The workflow has the following permissions:
+
+- `contents: write` - To read repository content and access git metadata
+- `packages: write` - To push images to GitHub Container Registry
+
+### Using Published Images
+
+Pull and run published images:
+
+```bash
+# Pull latest version
+docker pull ghcr.io/markcoleman/contentful-react:latest
+
+# Pull specific version
+docker pull ghcr.io/markcoleman/contentful-react:1.0.0
+
+# Run the container
+docker run -d -p 8080:8080 ghcr.io/markcoleman/contentful-react:latest
+```
+
+### Creating Releases
+
+To publish a new version:
+
+1. **Tag your commit**:
+
+   ```bash
+   git tag v1.0.0
+   git push origin v1.0.0
+   ```
+
+2. **Or create a GitHub release**:
+   - Go to Releases → Create new release
+   - Enter tag (e.g., `v1.0.0`)
+   - Add release notes
+   - Publish
+
+The workflow will automatically build and push the Docker image with appropriate tags.
 
 ## Troubleshooting
 
@@ -132,14 +195,23 @@ cat .dockerignore
 
 ## Production Deployment
 
-For production deployments:
+For production deployments, images are automatically published to GitHub Container Registry (GHCR). To deploy:
 
-1. Use a container registry (Docker Hub, ECR, GCR, etc.)
-2. Tag images with version numbers
-3. Use orchestration (Kubernetes, ECS, etc.)
-4. Configure external monitoring and logging
-5. Set up proper TLS/SSL termination (use a reverse proxy or load balancer)
-6. Consider read-only root filesystem with `--read-only` flag
+1. **Pull from GHCR**:
+
+   ```bash
+   docker pull ghcr.io/markcoleman/contentful-react:1.0.0
+   ```
+
+2. **Tag images with version numbers** (handled automatically by CI/CD)
+
+3. **Use orchestration** (Kubernetes, ECS, Docker Compose, etc.)
+
+4. **Configure external monitoring and logging**
+
+5. **Set up proper TLS/SSL termination** (use a reverse proxy or load balancer)
+
+6. **Consider read-only root filesystem** with `--read-only` flag
 
 Example production run:
 
@@ -151,5 +223,13 @@ docker run -d \
   --tmpfs /var/run \
   -p 8080:8080 \
   --restart unless-stopped \
-  contentful-react:1.0.0
+  ghcr.io/markcoleman/contentful-react:1.0.0
 ```
+
+### Image Visibility
+
+By default, GitHub Container Registry images are private. To make them public:
+
+1. Go to https://github.com/markcoleman/contentful-react/pkgs/container/contentful-react
+2. Click "Package settings"
+3. Change visibility to "Public" if desired
