@@ -1,0 +1,73 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: 220 25% 96%;
+  --foreground: 224 27% 16%;
+  --muted: 220 12% 88%;
+  --muted-foreground: 220 10% 46%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 224 27% 16%;
+  --card: 0 0% 100%;
+  --card-foreground: 224 27% 16%;
+  --border: 220 14% 85%;
+  --input: 220 14% 85%;
+  --primary: 352 86% 44%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 224 27% 16%;
+  --secondary-foreground: 0 0% 100%;
+  --accent: 213 39% 36%;
+  --accent-foreground: 0 0% 100%;
+  --destructive: 0 62% 55%;
+  --destructive-foreground: 0 0% 100%;
+  --ring: 352 86% 44%;
+  --radius: 14px;
+}
+
+.dark {
+  --background: 224 46% 10%;
+  --foreground: 0 0% 98%;
+  --muted: 220 12% 18%;
+  --muted-foreground: 220 10% 65%;
+  --popover: 224 46% 10%;
+  --popover-foreground: 0 0% 98%;
+  --card: 224 46% 12%;
+  --card-foreground: 0 0% 98%;
+  --border: 215 27% 24%;
+  --input: 215 27% 24%;
+  --primary: 352 86% 44%;
+  --primary-foreground: 0 0% 98%;
+  --secondary: 213 39% 36%;
+  --secondary-foreground: 0 0% 100%;
+  --accent: 220 16% 24%;
+  --accent-foreground: 0 0% 98%;
+  --destructive: 0 62% 55%;
+  --destructive-foreground: 0 0% 98%;
+  --ring: 352 86% 44%;
+  --radius: 14px;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground min-h-screen antialiased;
+    font-family:
+      'Space Grotesk',
+      'Inter',
+      system-ui,
+      -apple-system,
+      sans-serif;
+    background: hsl(var(--background));
+  }
+
+  ::selection {
+    background: hsl(var(--primary) / 0.2);
+    color: hsl(var(--foreground));
+  }
+}

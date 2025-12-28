@@ -1,0 +1,21 @@
+import { render, screen } from '@testing-library/react'
+import { describe, expect, it } from 'vitest'
+import App from './App'
+
+describe('App', () => {
+  it('renders the hero content', () => {
+    render(<App />)
+
+    expect(screen.getByRole('heading', { name: /Invest Strategically/i })).toBeInTheDocument()
+    const ctas = screen.getAllByRole('link', { name: /Get Started/i })
+    expect(ctas.length).toBeGreaterThan(0)
+  })
+
+  it('keeps Get Started subroutes on the onboarding page', async () => {
+    window.history.pushState({}, '', '/get-started/open')
+
+    render(<App />)
+
+    expect(screen.getByRole('heading', { name: /Get Started\s+In Minutes/i })).toBeInTheDocument()
+  })
+})
