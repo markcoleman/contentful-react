@@ -5,48 +5,48 @@
 @tailwind utilities;
 
 :root {
-  --background: 224 46% 6%;
-  --foreground: 210 40% 98%;
-  --muted: 215 21% 18%;
-  --muted-foreground: 217 10% 65%;
-  --popover: 224 46% 6%;
-  --popover-foreground: 210 40% 98%;
-  --card: 224 46% 8%;
-  --card-foreground: 210 40% 98%;
-  --border: 215 27% 20%;
-  --input: 215 27% 20%;
-  --primary: 199 89% 63%;
-  --primary-foreground: 222 47% 11%;
-  --secondary: 264 71% 66%;
-  --secondary-foreground: 210 40% 98%;
-  --accent: 185 84% 61%;
-  --accent-foreground: 224 46% 6%;
+  --background: 220 25% 96%;
+  --foreground: 224 27% 16%;
+  --muted: 220 12% 88%;
+  --muted-foreground: 220 10% 46%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 224 27% 16%;
+  --card: 0 0% 100%;
+  --card-foreground: 224 27% 16%;
+  --border: 220 14% 85%;
+  --input: 220 14% 85%;
+  --primary: 352 86% 44%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 224 27% 16%;
+  --secondary-foreground: 0 0% 100%;
+  --accent: 213 39% 36%;
+  --accent-foreground: 0 0% 100%;
   --destructive: 0 62% 55%;
-  --destructive-foreground: 210 40% 98%;
-  --ring: 199 89% 63%;
+  --destructive-foreground: 0 0% 100%;
+  --ring: 352 86% 44%;
   --radius: 14px;
 }
 
 .dark {
-  --background: 224 46% 6%;
-  --foreground: 210 40% 98%;
-  --muted: 215 21% 18%;
-  --muted-foreground: 217 10% 65%;
-  --popover: 224 46% 6%;
-  --popover-foreground: 210 40% 98%;
-  --card: 224 46% 8%;
-  --card-foreground: 210 40% 98%;
-  --border: 215 27% 20%;
-  --input: 215 27% 20%;
-  --primary: 199 89% 63%;
-  --primary-foreground: 222 47% 11%;
-  --secondary: 264 71% 66%;
-  --secondary-foreground: 210 40% 98%;
-  --accent: 185 84% 61%;
-  --accent-foreground: 224 46% 6%;
+  --background: 224 46% 10%;
+  --foreground: 0 0% 98%;
+  --muted: 220 12% 18%;
+  --muted-foreground: 220 10% 65%;
+  --popover: 224 46% 10%;
+  --popover-foreground: 0 0% 98%;
+  --card: 224 46% 12%;
+  --card-foreground: 0 0% 98%;
+  --border: 215 27% 24%;
+  --input: 215 27% 24%;
+  --primary: 352 86% 44%;
+  --primary-foreground: 0 0% 98%;
+  --secondary: 213 39% 36%;
+  --secondary-foreground: 0 0% 100%;
+  --accent: 220 16% 24%;
+  --accent-foreground: 0 0% 98%;
   --destructive: 0 62% 55%;
-  --destructive-foreground: 210 40% 98%;
-  --ring: 199 89% 63%;
+  --destructive-foreground: 0 0% 98%;
+  --ring: 352 86% 44%;
   --radius: 14px;
 }
 
@@ -63,11 +63,7 @@
       system-ui,
       -apple-system,
       sans-serif;
-    background-image:
-      radial-gradient(circle at 20% 20%, rgba(99, 102, 241, 0.12), transparent 30%),
-      radial-gradient(circle at 80% 10%, rgba(16, 185, 129, 0.12), transparent 28%),
-      radial-gradient(circle at 30% 80%, rgba(14, 165, 233, 0.12), transparent 30%),
-      linear-gradient(135deg, rgba(15, 23, 42, 0.85), rgba(17, 24, 39, 0.92));
+    background: hsl(var(--background));
   }
 
   ::selection {
