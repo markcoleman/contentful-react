@@ -6,6 +6,7 @@ describe('App', () => {
     render(<App />)
 
     expect(screen.getByRole('heading', { name: /Invest Strategically/i })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /Get Started/i })).toBeInTheDocument()
+    const ctas = screen.getAllByRole('link', { name: /Get Started/i })
+    expect(ctas.length).toBeGreaterThan(0)
   })
 })
