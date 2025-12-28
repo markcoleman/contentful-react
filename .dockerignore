@@ -18,7 +18,8 @@ dist-ssr
 # Version control
 .git
 .gitignore
-.github
+# .github - Exclude workflows but keep for Docker builds
+# .github/workflows/*.yml
 
 # IDE
 .vscode

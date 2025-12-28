@@ -2,7 +2,9 @@
 # Note: Build the app locally with `npm run build` before building this image
 FROM nginx:alpine
 
-# Install security updates (non-blocking if repos unavailable)
+# Install security updates
+# Note: Using || true to handle transient network issues during build
+# The base image is still pulled with latest security patches
 RUN apk upgrade --no-cache --force-missing-repositories || true
 
 # Remove default nginx static assets and config

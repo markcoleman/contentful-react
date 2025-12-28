@@ -2,6 +2,13 @@
 
 # Docker Container Testing Script
 # This script builds and tests the Docker container locally
+#
+# Usage: ./test-docker.sh [dockerfile]
+#   dockerfile: Optional path to Dockerfile (default: Dockerfile)
+#
+# Examples:
+#   ./test-docker.sh                    # Uses Dockerfile
+#   ./test-docker.sh Dockerfile.simple  # Uses Dockerfile.simple
 
 set -e
 
@@ -9,6 +16,7 @@ IMAGE_NAME="contentful-react"
 IMAGE_TAG="test"
 CONTAINER_NAME="contentful-react-test"
 PORT=8080
+DOCKERFILE="${1:-Dockerfile}"
 
 # Colors for output
 RED='\033[0;31m'
@@ -18,6 +26,7 @@ NC='\033[0m' # No Color
 
 echo "🐳 Docker Container Test Script"
 echo "================================"
+echo "Using Dockerfile: $DOCKERFILE"
 echo ""
 
 # Cleanup function
@@ -32,7 +41,7 @@ trap cleanup EXIT
 
 # Build the image
 echo "📦 Building Docker image..."
-docker build -t $IMAGE_NAME:$IMAGE_TAG .
+docker build -f "$DOCKERFILE" -t $IMAGE_NAME:$IMAGE_TAG .
 
 if [ $? -ne 0 ]; then
     echo -e "${RED}❌ Docker build failed${NC}"
