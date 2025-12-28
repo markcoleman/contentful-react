@@ -1,4 +1,4 @@
-name: Docker Build and Test
+name: Docker Build and Push
 
 on:
   workflow_dispatch:
@@ -8,15 +8,21 @@ on:
         required: false
         default: 'latest'
         type: string
+  push:
+    tags:
+      - 'v*.*.*'
+  release:
+    types: [published]
 
 jobs:
-  docker-build-test:
+  docker-build-push:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
+      packages: write
     env:
-      IMAGE_NAME: contentful-react
-      IMAGE_TAG: ${{ inputs.tag || 'latest' }}
+      REGISTRY: ghcr.io
+      IMAGE_NAME: ${{ github.repository }}
     
     steps:
       - name: Checkout code
@@ -37,20 +43,50 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Build Docker image
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+            type=sha,prefix={{branch}}-
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=raw,value=${{ inputs.tag }},enable=${{ github.event_name == 'workflow_dispatch' && inputs.tag != '' }}
+
+      - name: Build and push Docker image
+        id: build-push
         uses: docker/build-push-action@v5
         with:
           context: .
           file: ./Dockerfile.simple
-          push: false
-          load: true
-          tags: ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
+      - name: Pull image for testing
+        run: |
+          # Pull the first tag from the list for testing
+          TEST_TAG=$(echo "${{ steps.meta.outputs.tags }}" | head -n1)
+          docker pull "$TEST_TAG"
+          docker tag "$TEST_TAG" test-image:local
+
       - name: Run container
         run: |
-          docker run -d --name test-container -p 8080:8080 ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+          docker run -d --name test-container -p 8080:8080 test-image:local
           echo "Container started, waiting for it to be ready..."
           sleep 5
 
@@ -125,6 +161,11 @@ jobs:
           echo "✅ All endpoint tests passed"
           echo "✅ Security headers verified"
           echo "✅ Non-root user verified"
+          echo "✅ Image pushed to GitHub Container Registry"
           echo ""
-          echo "Image: ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}"
-          docker images ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} --format "Size: {{.Size}}"
+          echo "📦 Pushed images:"
+          echo "${{ steps.meta.outputs.tags }}"
+          echo ""
+          echo "🔗 View at: https://github.com/${{ github.repository }}/pkgs/container/$(echo ${{ github.repository }} | cut -d'/' -f2)"
+          echo ""
+          docker images test-image:local --format "Size: {{.Size}}"
