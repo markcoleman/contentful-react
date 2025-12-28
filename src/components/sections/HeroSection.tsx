@@ -48,15 +48,15 @@ export function HeroSection({
     >
       <div
         className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.08),transparent_30%),radial-gradient(circle_at_70%_0%,rgba(255,255,255,0.06),transparent_32%)]"
-        aria-hidden
+        aria-hidden={true}
       />
       <div
         className="pointer-events-none absolute -left-16 bottom-0 h-80 w-80 rounded-full bg-primary/20 blur-3xl"
-        aria-hidden
+        aria-hidden={true}
       />
       <div
         className="pointer-events-none absolute right-[-8%] top-10 h-96 w-96 rounded-full bg-rose-400/20 blur-3xl"
-        aria-hidden
+        aria-hidden={true}
       />
 
       <div className="container relative z-10 grid min-h-[520px] gap-10 py-16 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
