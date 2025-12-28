@@ -30,6 +30,7 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/get-started" element={<GetStartedPage />} />
+          <Route path="/get-started/*" element={<GetStartedPage />} />
           <Route path="*" element={<HomePage />} />
         </Routes>
       </div>

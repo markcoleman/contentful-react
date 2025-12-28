@@ -10,4 +10,12 @@ describe('App', () => {
     const ctas = screen.getAllByRole('link', { name: /Get Started/i })
     expect(ctas.length).toBeGreaterThan(0)
   })
+
+  it('keeps Get Started subroutes on the onboarding page', async () => {
+    window.history.pushState({}, '', '/get-started/open')
+
+    render(<App />)
+
+    expect(screen.getByRole('heading', { name: /Get Started\s+In Minutes/i })).toBeInTheDocument()
+  })
 })
