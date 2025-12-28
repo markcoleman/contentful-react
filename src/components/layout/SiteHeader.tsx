@@ -130,6 +130,7 @@ export function SiteHeader({ brand, navItems, utilityLinks, primaryCta }: SiteHe
                 <input
                   className="flex-1 text-sm text-foreground outline-none placeholder:text-muted-foreground"
                   placeholder="Search products, rates, support"
+                  aria-label="Search products, rates, and support"
                 />
               </div>
               {primaryCta ? (
