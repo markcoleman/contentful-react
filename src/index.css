@@ -1,0 +1,77 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: 224 46% 6%;
+  --foreground: 210 40% 98%;
+  --muted: 215 21% 18%;
+  --muted-foreground: 217 10% 65%;
+  --popover: 224 46% 6%;
+  --popover-foreground: 210 40% 98%;
+  --card: 224 46% 8%;
+  --card-foreground: 210 40% 98%;
+  --border: 215 27% 20%;
+  --input: 215 27% 20%;
+  --primary: 199 89% 63%;
+  --primary-foreground: 222 47% 11%;
+  --secondary: 264 71% 66%;
+  --secondary-foreground: 210 40% 98%;
+  --accent: 185 84% 61%;
+  --accent-foreground: 224 46% 6%;
+  --destructive: 0 62% 55%;
+  --destructive-foreground: 210 40% 98%;
+  --ring: 199 89% 63%;
+  --radius: 14px;
+}
+
+.dark {
+  --background: 224 46% 6%;
+  --foreground: 210 40% 98%;
+  --muted: 215 21% 18%;
+  --muted-foreground: 217 10% 65%;
+  --popover: 224 46% 6%;
+  --popover-foreground: 210 40% 98%;
+  --card: 224 46% 8%;
+  --card-foreground: 210 40% 98%;
+  --border: 215 27% 20%;
+  --input: 215 27% 20%;
+  --primary: 199 89% 63%;
+  --primary-foreground: 222 47% 11%;
+  --secondary: 264 71% 66%;
+  --secondary-foreground: 210 40% 98%;
+  --accent: 185 84% 61%;
+  --accent-foreground: 224 46% 6%;
+  --destructive: 0 62% 55%;
+  --destructive-foreground: 210 40% 98%;
+  --ring: 199 89% 63%;
+  --radius: 14px;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground min-h-screen antialiased;
+    font-family:
+      'Space Grotesk',
+      'Inter',
+      system-ui,
+      -apple-system,
+      sans-serif;
+    background-image:
+      radial-gradient(circle at 20% 20%, rgba(99, 102, 241, 0.12), transparent 30%),
+      radial-gradient(circle at 80% 10%, rgba(16, 185, 129, 0.12), transparent 28%),
+      radial-gradient(circle at 30% 80%, rgba(14, 165, 233, 0.12), transparent 30%),
+      linear-gradient(135deg, rgba(15, 23, 42, 0.85), rgba(17, 24, 39, 0.92));
+  }
+
+  ::selection {
+    background: hsl(var(--primary) / 0.2);
+    color: hsl(var(--foreground));
+  }
+}
