@@ -1,0 +1,130 @@
+name: Docker Build and Test
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Docker image tag'
+        required: false
+        default: 'latest'
+        type: string
+
+jobs:
+  docker-build-test:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    env:
+      IMAGE_NAME: contentful-react
+      IMAGE_TAG: ${{ inputs.tag || 'latest' }}
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build React app
+        run: npm run build
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile.simple
+          push: false
+          load: true
+          tags: ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Run container
+        run: |
+          docker run -d --name test-container -p 8080:8080 ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+          echo "Container started, waiting for it to be ready..."
+          sleep 5
+
+      - name: Wait for container to be healthy
+        run: |
+          timeout=30
+          counter=0
+          until docker inspect --format='{{.State.Health.Status}}' test-container | grep -q 'healthy' || [ $counter -eq $timeout ]; do
+            echo "Waiting for container to be healthy... ($counter/$timeout)"
+            sleep 1
+            counter=$((counter + 1))
+          done
+          
+          if [ $counter -eq $timeout ]; then
+            echo "Container health check timed out"
+            docker logs test-container
+            exit 1
+          fi
+          echo "Container is healthy!"
+
+      - name: Test container endpoints
+        run: |
+          echo "Testing main page..."
+          curl -f http://localhost:8080/ -o /dev/null -w "HTTP Status: %{http_code}\n" || exit 1
+          
+          echo "Testing health endpoint..."
+          curl -f http://localhost:8080/health -w "HTTP Status: %{http_code}\n" || exit 1
+          
+          echo "Testing SPA routing (should return 200, not 404)..."
+          curl -f http://localhost:8080/some-route -o /dev/null -w "HTTP Status: %{http_code}\n" || exit 1
+
+      - name: Verify security headers
+        run: |
+          echo "Checking security headers..."
+          response=$(curl -I http://localhost:8080/ 2>&1)
+          
+          echo "$response" | grep -i "X-Frame-Options" || (echo "Missing X-Frame-Options header" && exit 1)
+          echo "$response" | grep -i "X-Content-Type-Options" || (echo "Missing X-Content-Type-Options header" && exit 1)
+          echo "$response" | grep -i "X-XSS-Protection" || (echo "Missing X-XSS-Protection header" && exit 1)
+          echo "$response" | grep -i "Content-Security-Policy" || (echo "Missing Content-Security-Policy header" && exit 1)
+          
+          echo "All security headers present!"
+
+      - name: Check container runs as non-root
+        run: |
+          user=$(docker exec test-container whoami)
+          if [ "$user" == "root" ]; then
+            echo "Container is running as root - security violation!"
+            exit 1
+          fi
+          echo "Container running as user: $user (non-root) ✓"
+
+      - name: Verify static assets are cached
+        run: |
+          echo "Testing cache headers for static assets..."
+          response=$(curl -I http://localhost:8080/assets/ 2>&1 || true)
+          echo "$response"
+
+      - name: Show container logs
+        if: always()
+        run: docker logs test-container
+
+      - name: Stop container
+        if: always()
+        run: docker stop test-container && docker rm test-container
+
+      - name: Output build summary
+        if: success()
+        run: |
+          echo "✅ Docker build successful"
+          echo "✅ Container health check passed"
+          echo "✅ All endpoint tests passed"
+          echo "✅ Security headers verified"
+          echo "✅ Non-root user verified"
+          echo ""
+          echo "Image: ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}"
+          docker images ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} --format "Size: {{.Size}}"

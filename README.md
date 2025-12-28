@@ -29,6 +29,25 @@ npm run dev
 - Run `npm run check` locally before opening a PR to match CI expectations.
 - On every commit, Husky runs a `pre-commit` hook that uses lint-staged to lint and format staged files automatically.
 
+## Docker Deployment
+
+This project includes Docker support for containerized deployment with security best practices:
+
+- Runs on nginx:alpine with a non-root user
+- Includes security headers (CSP, X-Frame-Options, etc.)
+- Health checks and SPA routing support
+- Can be triggered via GitHub Actions workflow_dispatch
+
+See [DOCKER.md](DOCKER.md) for complete documentation, or quick start:
+
+```bash
+npm run build
+docker build -f Dockerfile.simple -t contentful-react .
+docker run -d -p 8080:8080 contentful-react
+```
+
+Test locally with: `./test-docker.sh`
+
 ## Tooling
 
 - React 19, Vite, and Vitest configured for jsdom
