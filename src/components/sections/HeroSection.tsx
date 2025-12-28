@@ -1,4 +1,4 @@
-import { ReactNode } from 'react'
+import type { ReactNode } from 'react'
 import { buttonVariants } from '../ui/button'
 import { cn } from '../../lib/utils'
 import { Link } from 'react-router-dom'

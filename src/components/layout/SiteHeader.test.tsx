@@ -1,7 +1,9 @@
 import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { describe, expect, it } from 'vitest'
 import { MemoryRouter } from 'react-router-dom'
-import { SiteHeader, NavItem, UtilityLink } from './SiteHeader'
+import { SiteHeader } from './SiteHeader'
+import type { NavItem, UtilityLink } from './SiteHeader'
 
 type SetupArgs = {
   navItems?: NavItem[]
